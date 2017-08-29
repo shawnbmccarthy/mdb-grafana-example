@@ -45,7 +45,7 @@ module.exports = {
             {$project: {date: 1, rep: '$val.dim.rep', value: '$val.value'}},
             {$group: {_id: {date: '$date', rep: '$rep'}, avgValue: {$avg: '$value'}}},
             {$project: {date: '$_id.date', rep: '$_id.rep', avgValue: '$avgValue', _id: 0}},
-            {$group: {_id: '$rep', results: {$addToSet: {date: '$date', avgValue: '$avgValue'}}}},
+            {$group: {_id: '$rep', results: {$addToSet: {avgValue: '$avgValue', date: '$date'}}}},
             {$project: {target: '$_id', datapoints: '$results', _id: 0}},
             {$limit: limit}
         ], function(err, results){
