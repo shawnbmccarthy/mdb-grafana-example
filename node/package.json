@@ -1,0 +1,12 @@
+{
+  "name": "grafano-example",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "^4.15.*",
+    "body-parser": "^1.17.*",
+    "morgan": "^1.8.*",
+    "mongoose": "^4.11.*",
+    "mongodb": "^2.2.*",
+    "lodash": "^4.17.*"
+  }
+}
