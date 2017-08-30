@@ -52,6 +52,7 @@ def generate_doc(date, delta, type='minute', extendedData=False):
         doc['val'].append(dim)
     return doc
 
+
 #
 # generate some number of documents
 #
@@ -59,42 +60,71 @@ def generate_minutes(n):
     m = 0
     while m < n:
         date = dt.now()
-        delta = td(minutes=random.randint(0, MINUTES_IN_YEAR), seconds=date.second, microseconds=date.microsecond)
+        delta = td(
+            minutes=random.randint(0, MINUTES_IN_YEAR),
+            seconds=date.second,
+            microseconds=date.microsecond
+        )
         yield generate_doc(date, delta)
         m += 1
 
-def generate_hours(n):
+
+def generate_hourly(n):
     m = 0
     while m < n:
         date = dt.now()
-        delta = td(hours=random.randint(0, HOURS_IN_YEAR), minutes=date.minute, seconds=date.second, microseconds=date.microsecond)
-        yield generate_doc(date, delta, 'hour')
+        delta = td(
+            hours=random.randint(0, HOURS_IN_YEAR),
+            minutes=date.minute,
+            seconds=date.second,
+            microseconds=date.microsecond
+        )
+        yield generate_doc(date, delta, 'hourly')
         m += 1
     pass
+
 
 def generate_daily(n):
     m = 0
     while m < n:
         date = dt.now()
-        delta = td(days=random.randint(0, DAYS_IN_YEAR), hours=date.hour, minutes=date.minute, seconds=date.second, microseconds=date.microsecond)
+        delta = td(
+            days=random.randint(0, DAYS_IN_YEAR),
+            hours=date.hour, minutes=date.minute,
+            seconds=date.second,
+            microseconds=date.microsecond
+        )
         yield generate_doc(date, delta, 'daily', True)
         m += 1
     pass
+
 
 def generate_monthly(n):
     m = 0
     while m < n:
         date = dt.now()
-        delta = td(days=random.randint(0, DAYS_IN_YEAR), hours=date.hour, minutes=date.minute, seconds=date.second, microseconds=date.microsecond)
+        delta = td(
+            days=random.randint(0, DAYS_IN_YEAR),
+            hours=date.hour,
+            minutes=date.minute,
+            seconds=date.second,
+            microseconds=date.microsecond
+        )
         yield generate_doc(date, delta, 'monthly')
         m += 1
     pass
+
 
 def generate_yearly(n):
     m = 0
     while m < n:
         date = dt.now()
-        delta = td(days=random.randint(0, DAYS_IN_YEAR), hours=date.hour, minutes=date.minute, seconds=date.second, microseconds=date.microsecond)
+        delta = td(
+            days=random.randint(0, DAYS_IN_YEAR),
+            hours=date.hour, minutes=date.minute,
+            seconds=date.second,
+            microseconds=date.microsecond
+        )
         yield generate_doc(date, delta, 'yearly')
         m += 1
     pass
