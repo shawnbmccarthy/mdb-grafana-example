@@ -8,6 +8,7 @@ from loader.data import CAST_OF_CHARACTERS, ACCT_STATUSES, ACCT_TYPES,\
 
 #
 # will generate data over something like 3 years
+# TODO: Change data format to a flat structure with idx's
 #
 
 

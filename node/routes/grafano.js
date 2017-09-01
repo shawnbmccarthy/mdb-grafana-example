@@ -2,13 +2,13 @@ var express     = require('express');
 var grafanaUtil = require('../utils/grafana_utils');
 var router      = express.Router();
 
-router.get('/', function(req, res) {
+router.get('/:dim/:t/', function(req, res) {
     res.json({results: 'success'});
     res.end();
 });
 
-router.post('/search', function(req, res){
-    grafanaUtil.generateReps('monthly', function(err, result){
+router.post('/:dim/:t/search', function(req, res){
+    grafanaUtil.generateDims(req.params.t, req.params.dim, function(err, result){
         if(err){
             res.json({error: 'failed to generate reps for query'});
             res.sendStatus(500);
@@ -18,16 +18,14 @@ router.post('/search', function(req, res){
     });
 });
 
-router.post('/annotations', function(req, res) {
-    console.log(req.body);
-    res.json([]);
-    res.end();
+router.post('/:dim/:t/annotations', function(req, res) {
+  res.json([]);
+  res.end();
 });
 
-router.post('/query', function(req, res){
-    grafanaUtil.generateRepsDataPoints('hourly', req.body, function(err, results){
+router.post('/:dim/:t/query', function(req, res){
+    grafanaUtil.generateDataPoints(req.params.t, req.params.dim, req.body, function(err, results){
         if(err){
-            console.log(err);
             res.status(500);
             res.json({error: 'failed to generate reps for query'});
             res.end();
