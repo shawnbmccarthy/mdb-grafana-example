@@ -54,6 +54,7 @@ def generate_doc(date, delta, type='minute', extendedData=False):
     doc['val'] = []
     for i in range(0, random.randint(1, MAX_DIMENSION)):
         dim = {}
+        dim['dim'] = {}
         dim['value'] = random.uniform(MIN_VALUE, MAX_VALUE)
         dim['dim']['rep'] = random.choice(REPS)
         dim['dim']['dob_yr'] = random.choice(DOB_YRS)
