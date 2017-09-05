@@ -5,7 +5,10 @@ var app          = express();
 var mongoUtil    = require('./utils/mdb_util');
 var grafanaRoute = require('./routes/grafana');
 
-app.use(morgan('combined'));
+var env = process.env.NODE_ENV || 'development';
+var cfg = require('./config/' + env);
+
+app.use(morgan(cfg.format));
 app.use(bodyParser.json());
 
 /*
@@ -29,7 +32,7 @@ mongoUtil.connectToDb(function(err){
         console.log(err);
         return;
     }
-    app.listen(3333, function(){
+    app.listen(cfg.port, function(){
         console.log('grafano 2 mongodb api running on port 3333');
     });
 });

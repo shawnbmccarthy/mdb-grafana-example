@@ -1,10 +1,12 @@
 var MongoClient = require('mongodb').MongoClient;
-var defaultUri  = 'mongodb://localhost:27017/sample';
+
+var env = process.env.NODE_ENV || 'development';
+var cfg = require('../config/' + env);
 var _db         = null;
 
 module.exports  = {
     connectToDb: function(callback){
-        MongoClient.connect(defaultUri, function(err, db){
+        MongoClient.connect(cfg.url, function(err, db){
             _db = db;
             callback(err);
         });

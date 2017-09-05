@@ -1,6 +1,16 @@
 {
   "name": "grafano-example",
+  "description": "simple grafana to mdb example",
+  "author": "shawn",
+  "email": "shawn.mccarthy@mongodb.com",
+  "homepage": "https://github.com/shawnbmccarthy/mdb-grafana-example",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shawnbmccarthy/mdb-grafana-example"
+  },
+  "license": "Apache-2.0",
   "version": "0.0.1",
+  "bin": "./server.js",
   "dependencies": {
     "express": "^4.15.*",
     "body-parser": "^1.17.*",

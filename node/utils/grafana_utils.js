@@ -1,5 +1,8 @@
 var mongoUtil = require('../utils/mdb_util');
 
+/*
+ * TODO: abstract out the queries needed from the actual execution
+ */
 module.exports = {
     generateDims: function(collectionName, dim, callback){
         var db   = mongoUtil.getDb();
