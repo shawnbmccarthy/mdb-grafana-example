@@ -1,9 +1,9 @@
-var express     = require('express');
-var bodyParser  = require('body-parser');
-var morgan      = require('morgan');
-var app         = express();
-var mongoUtil   = require('./utils/mdb_util');
-var g_route     = require('./routes/grafano');
+var express      = require('express');
+var bodyParser   = require('body-parser');
+var morgan       = require('morgan');
+var app          = express();
+var mongoUtil    = require('./utils/mdb_util');
+var grafanaRoute = require('./routes/grafana');
 
 app.use(morgan('combined'));
 app.use(bodyParser.json());
@@ -21,7 +21,7 @@ app.use(function(req, res, next){
 /*
  * setup routes
  */
-app.use('/api/v1', g_route);
+app.use('/api/v1', grafanaRoute);
 
 mongoUtil.connectToDb(function(err){
     if(err){

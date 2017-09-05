@@ -25,6 +25,23 @@ def generate_username():
     return (name[0][1] + '.' + name[1]).replace(' ', '.')
 
 
+# will need to see how this works
+def generate_profiles(n):
+    m = 0
+    while m < n:
+        doc = {}
+        doc['name'] = { 'first': random_first_name(), 'last': random_last_name() }
+        doc['_id'] = (doc['name']['first'][0] + '.' + doc['name']['last']).replace(' ', '.')
+        # create 1 - 5 years back randomly
+        doc['created_on'] = dt.now() - td(minutes=random.randint(MINUTES_IN_YEAR, MINUTES_IN_YEAR * 5))
+        doc['updated_on'] = dt.now() - td(minutes=random.randint(0, MINUTES_IN_YEAR - 60))
+        # just mask it for right now
+        doc['password'] = '***********'
+        # leave it pretty flat right now - will work on it later
+        yield doc
+        m += 1
+
+
 def generate_doc(date, delta, type='minute', extendedData=False):
     doc = {}
     doc['_class'] = 'com.mongodb.BasicDBObject',
@@ -37,7 +54,6 @@ def generate_doc(date, delta, type='minute', extendedData=False):
     doc['val'] = []
     for i in range(0, random.randint(1, MAX_DIMENSION)):
         dim = {}
-        dim['dim'] = {}
         dim['value'] = random.uniform(MIN_VALUE, MAX_VALUE)
         dim['dim']['rep'] = random.choice(REPS)
         dim['dim']['dob_yr'] = random.choice(DOB_YRS)
