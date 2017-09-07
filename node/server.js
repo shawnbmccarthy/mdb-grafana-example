@@ -33,6 +33,6 @@ mongoUtil.connectToDb(function(err){
         return;
     }
     app.listen(cfg.port, function(){
-        console.log('grafano 2 mongodb api running on port 3333');
+        console.log('grafano 2 mongodb api running on port: ' + cfg.port);
     });
 });

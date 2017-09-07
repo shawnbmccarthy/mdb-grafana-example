@@ -57,6 +57,10 @@ module.exports = {
                 callback(err, null);
             } else {
                 var returns = [];
+
+                /*
+                 * this is silly can we just use the sort
+                 */
                 for (var i = 0; i < results.length; i++) {
                     var datapoints = results[i].datapoints;
                     datapoints = datapoints.sort(function (a, b) {

@@ -42,6 +42,10 @@ def generate_profiles(n):
         m += 1
 
 
+def generate_flat_doc(date, delete, type='minute', extendedData=False):
+    doc = {}
+    pass
+
 def generate_doc(date, delta, type='minute', extendedData=False):
     doc = {}
     doc['_class'] = 'com.mongodb.BasicDBObject',
