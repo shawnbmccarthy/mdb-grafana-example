@@ -24,7 +24,6 @@ module.exports = {
         var targets = params.targets;
         var search  = {$or: []};
 
-        console.log(params);
         /*
          * grafano passes targets as an array of objects for each element
          * these elements can be of type timeserie or table, currently
@@ -49,6 +48,7 @@ module.exports = {
             {$project: {date: 1, dim: '$val.dim.' + dim, value: '$val.value'}},
             {$group: {_id: {date: '$date', dim: '$dim'}, avgValue: {$avg: '$value'}}},
             {$project: {date: '$_id.date', dim: '$_id.dim', avgValue: '$avgValue', _id: 0}},
+            {$sort: {date: -1}},
             {$group: {_id: '$dim', results: {$addToSet: {avgValue: '$avgValue', date: '$date'}}}},
             {$project: {target: '$_id', datapoints: '$results', _id: 0}},
             {$limit: limit}
@@ -59,7 +59,7 @@ module.exports = {
                 var returns = [];
 
                 /*
-                 * this is silly can we just use the sort
+                 * this is silly can we just use the sort [TESTED - Need the sort]
                  */
                 for (var i = 0; i < results.length; i++) {
                     var datapoints = results[i].datapoints;
