@@ -65,12 +65,12 @@ def generate_doc(date, delta, type='minute', extendedData=False):
         dim['dim']['acct_type'] = random.choice(ACCT_TYPES)
         dim['dim']['state'] = random.choice(STATES)
         if extendedData:
-            dim['direction'] = random.choice(DIRECTIONS)
-            dim['acct_status'] = random.choice(ACCT_STATUSES)
+            dim['dim']['direction'] = random.choice(DIRECTIONS)
+            dim['dim']['acct_status'] = random.choice(ACCT_STATUSES)
         if type == 'hour':
-            dim['hh'] = date.hour
+            dim['dim']['hh'] = date.hour
         elif type == 'daily' or type == 'monthly' or type == 'yearly':
-            dim['date'] = str(date.year) + '-' + str(date.month) + '-' + str(date.day)
+            dim['dim']['date'] = str(date.year) + '-' + str(date.month) + '-' + str(date.day)
         doc['val'].append(dim)
     return doc
 
