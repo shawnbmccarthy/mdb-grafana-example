@@ -35,6 +35,7 @@ def generate_profiles(n):
         # create 1 - 5 years back randomly
         doc['created_on'] = dt.now() - td(minutes=random.randint(MINUTES_IN_YEAR, MINUTES_IN_YEAR * 5))
         doc['updated_on'] = dt.now() - td(minutes=random.randint(0, MINUTES_IN_YEAR - 60))
+        doc['id_num'] = m
         # just mask it for right now
         doc['password'] = '***********'
         # leave it pretty flat right now - will work on it later
@@ -42,9 +43,30 @@ def generate_profiles(n):
         m += 1
 
 
-def generate_flat_doc(date, delete, type='minute', extendedData=False):
+def generate_flat_doc(db, date, delta):
     doc = {}
-    pass
+    uDoc = None
+    cond = True
+    while cond:
+        uDoc = db['profile'].find_one({'id_num': random.randint(0,4999)})
+        if uDoc != None:
+            cond = False
+
+    userId = uDoc['_id']
+    doc['userId'] = userId
+    doc['date'] = date - delta
+    doc['mm'] = doc['date'].minute
+    doc['hh'] = doc['date'].hour
+    doc['nnas'] = random.uniform(MIN_VALUE, MAX_VALUE)
+    doc['dim'] = {
+        'rep': random.choice(REPS),
+        'dob_yr': random.choice(DOB_YRS),
+        'acct_type': random.choice(ACCT_TYPES),
+        'state': random.choice(STATES),
+        'direction': random.choice(DIRECTIONS),
+        'acct_status': random.choice(ACCT_STATUSES)
+    }
+    return doc
 
 def generate_doc(date, delta, type='minute', extendedData=False):
     doc = {}
@@ -78,7 +100,7 @@ def generate_doc(date, delta, type='minute', extendedData=False):
 #
 # generate some number of documents
 #
-def generate_minutes(n):
+def generate_minutes(db, n):
     m = 0
     while m < n:
         date = dt.now()
@@ -91,7 +113,7 @@ def generate_minutes(n):
         m += 1
 
 
-def generate_hourly(n):
+def generate_hourly(db, n):
     m = 0
     while m < n:
         date = dt.now()
@@ -106,7 +128,7 @@ def generate_hourly(n):
     pass
 
 
-def generate_daily(n):
+def generate_daily(db, n):
     m = 0
     while m < n:
         date = dt.now()
@@ -121,7 +143,7 @@ def generate_daily(n):
     pass
 
 
-def generate_monthly(n):
+def generate_monthly(db, n):
     m = 0
     while m < n:
         date = dt.now()
@@ -137,7 +159,7 @@ def generate_monthly(n):
     pass
 
 
-def generate_yearly(n):
+def generate_yearly(db, n):
     m = 0
     while m < n:
         date = dt.now()
@@ -148,5 +170,81 @@ def generate_yearly(n):
             microseconds=date.microsecond
         )
         yield generate_doc(date, delta, 'yearly')
+        m += 1
+    pass
+
+#
+# generate some number of documents
+#
+def generate_flat_minutes(db, n):
+    m = 0
+    while m < n:
+        date = dt.now()
+        delta = td(
+            minutes=random.randint(0, MINUTES_IN_YEAR),
+            seconds=date.second,
+            microseconds=date.microsecond
+        )
+        yield generate_flat_doc(db, date, delta)
+        m += 1
+
+
+def generate_flat_hourly(db, n):
+    m = 0
+    while m < n:
+        date = dt.now()
+        delta = td(
+            hours=random.randint(0, HOURS_IN_YEAR),
+            minutes=date.minute,
+            seconds=date.second,
+            microseconds=date.microsecond
+        )
+        yield generate_flat_doc(db, date, delta)
+        m += 1
+    pass
+
+
+def generate_flat_daily(db, n):
+    m = 0
+    while m < n:
+        date = dt.now()
+        delta = td(
+            days=random.randint(0, DAYS_IN_YEAR),
+            hours=date.hour, minutes=date.minute,
+            seconds=date.second,
+            microseconds=date.microsecond
+        )
+        yield generate_flat_doc(db, date, delta)
+        m += 1
+    pass
+
+
+def generate_flat_monthly(db, n):
+    m = 0
+    while m < n:
+        date = dt.now()
+        delta = td(
+            days=random.randint(0, DAYS_IN_YEAR),
+            hours=date.hour,
+            minutes=date.minute,
+            seconds=date.second,
+            microseconds=date.microsecond
+        )
+        yield generate_flat_doc(db, date, delta)
+        m += 1
+    pass
+
+
+def generate_flat_yearly(db, n):
+    m = 0
+    while m < n:
+        date = dt.now()
+        delta = td(
+            days=random.randint(0, DAYS_IN_YEAR),
+            hours=date.hour, minutes=date.minute,
+            seconds=date.second,
+            microseconds=date.microsecond
+        )
+        yield generate_flat_doc(db, date, delta)
         m += 1
     pass

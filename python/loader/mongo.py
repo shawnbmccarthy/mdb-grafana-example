@@ -1,7 +1,8 @@
 import logging
 from timeit import default_timer as timer
 from pymongo import MongoClient
-from loader import generate_minutes, generate_hourly, generate_daily, generate_monthly, generate_yearly
+from loader import generate_minutes, generate_hourly, generate_daily, generate_monthly, generate_yearly, generate_profiles, \
+    generate_flat_daily, generate_flat_hourly, generate_flat_minutes, generate_flat_monthly, generate_flat_yearly
 
 # TODO: clean up timing
 
@@ -13,21 +14,34 @@ def connect_to_db(uri):
     return client.get_database()
 
 
+def create_profiles(db, coll='profile', number_of_profiles=5000):
+    logging.info('creating %d profiles', number_of_profiles)
+    for i in generate_profiles(number_of_profiles):
+        try:
+            ret = db[coll].insert_one(i)
+        except:
+            pass
+
+        while db[coll].count() < number_of_profiles:
+            for i in generate_profiles(db[coll].count()):
+                try:
+                    ret = db[coll].insert_one(i)
+                except:
+                    pass
+
+
 def load_docs(db, coll, function, number_of_batches, size_of_batches):
-    logging.info('loading data into collection: %s' % coll)
+    logging.info('loading data into collection: %s', coll)
     batches_ran = 0
-    total_inserts = 0
-    total_runtime = 0
-    global_start = timer()
     while batches_ran < number_of_batches:
         docs = []
         batch_start = timer()
-        for i in function(size_of_batches):
+        for i in function(db, size_of_batches):
             docs.append(i)
         batch_end = timer()
         db[coll].insert_many(docs)
         insert_end = timer()
-        logging.debug('insert 100 (doc_gen:%.4fus, insert:%.4fus, batch_run:%.4fus)', (batch_end-batch_start), (insert_end-batch_end), (insert_end-batch_start))
+        logging.debug('%d: insert %d (doc_gen:%.4fus, insert:%.4fus, batch_run:%.4fus)', number_of_batches, size_of_batches, (batch_end-batch_start), (insert_end-batch_end), (insert_end-batch_start))
         batches_ran += 1
 
 def load_minutes(db, number_of_batches=100, size_of_batches=100):
@@ -48,3 +62,23 @@ def load_monthly(db, number_of_batches=100, size_of_batches=100):
 
 def load_yearly(db, number_of_batches=100, size_of_batches=100):
     load_docs(db, 'yearly', generate_yearly, number_of_batches, size_of_batches)
+
+
+def load_minutes_flat(db, number_of_batches=100, size_of_batches=100):
+    load_docs(db, 'minutes_flat', generate_flat_minutes, number_of_batches, size_of_batches)
+
+
+def load_hourly_flat(db, number_of_batches=100, size_of_batches=100):
+    load_docs(db, 'hourly_flat', generate_flat_hourly, number_of_batches, size_of_batches)
+
+
+def load_daily_flat(db, number_of_batches=100, size_of_batches=100):
+    load_docs(db, 'daily_flat', generate_flat_daily, number_of_batches, size_of_batches)
+
+
+def load_monthly_flat(db, number_of_batches=100, size_of_batches=100):
+    load_docs(db, 'monthly_flat', generate_flat_monthly, number_of_batches, size_of_batches)
+
+
+def load_yearly_flat(db, number_of_batches=100, size_of_batches=100):
+    load_docs(db, 'yearly_flat', generate_flat_yearly, number_of_batches, size_of_batches)
