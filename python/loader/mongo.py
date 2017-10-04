@@ -1,6 +1,8 @@
 import logging
+import time
 from timeit import default_timer as timer
 from pymongo import MongoClient
+from pymongo.errors import PyMongoError
 from loader import generate_minutes, generate_hourly, generate_daily, generate_monthly, generate_yearly, generate_profiles, \
     generate_flat_daily, generate_flat_hourly, generate_flat_minutes, generate_flat_monthly, generate_flat_yearly
 
@@ -39,10 +41,27 @@ def load_docs(db, coll, function, number_of_batches, size_of_batches):
         for i in function(db, size_of_batches):
             docs.append(i)
         batch_end = timer()
-        db[coll].insert_many(docs)
+        try_insert_many(db, coll, docs)
+
         insert_end = timer()
         logging.debug('%d: insert %d (doc_gen:%.4fus, insert:%.4fus, batch_run:%.4fus)', number_of_batches, size_of_batches, (batch_end-batch_start), (insert_end-batch_end), (insert_end-batch_start))
         batches_ran += 1
+
+
+def try_insert_many(db, coll, docs):
+    success  = False
+    attempts = 0
+    while not success:
+        try:
+            db[coll].insert_many(docs)
+            success = True
+        except PyMongoError as e:
+            logging.error('failed to insert (code:%s): %s', e.code, e.details)
+            attempts += 1
+        if attempts >= 10:
+            logging.error('failed in 10 attempts: will save')
+            success = True
+        time.sleep(attempts)
 
 def load_minutes(db, number_of_batches=100, size_of_batches=100):
     load_docs(db, 'minutes', generate_minutes, number_of_batches, size_of_batches)
