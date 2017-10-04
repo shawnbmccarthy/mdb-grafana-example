@@ -56,7 +56,10 @@ def try_insert_many(db, coll, docs):
             db[coll].insert_many(docs)
             success = True
         except (AutoReconnect, PyMongoError) as e:
-            logging.error('failed to insert (code:%s): will attempt again', e.code)
+            code = 'NONE'
+            if hasattr(e, 'code'):
+                code = e.code
+            logging.error('failed to insert (code:%s): will attempt again', code)
             for d in docs:
                 if '_id' in d:
                     del(d['_id'])
