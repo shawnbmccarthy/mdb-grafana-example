@@ -2,7 +2,7 @@ import logging
 import time
 from timeit import default_timer as timer
 from pymongo import MongoClient
-from pymongo.errors import PyMongoError
+from pymongo.errors import PyMongoError, AutoReconnect
 from loader import generate_minutes, generate_hourly, generate_daily, generate_monthly, generate_yearly, generate_profiles, \
     generate_flat_daily, generate_flat_hourly, generate_flat_minutes, generate_flat_monthly, generate_flat_yearly
 
@@ -55,7 +55,7 @@ def try_insert_many(db, coll, docs):
         try:
             db[coll].insert_many(docs)
             success = True
-        except PyMongoError as e:
+        except (AutoReconnect, PyMongoError) as e:
             logging.error('failed to insert (code:%s): will attempt again', e.code)
             for d in docs:
                 if '_id' in d:
