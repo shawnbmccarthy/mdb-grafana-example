@@ -57,6 +57,9 @@ def try_insert_many(db, coll, docs):
             success = True
         except PyMongoError as e:
             logging.error('failed to insert (code:%s): %s', e.code, e.details)
+            for d in docs:
+                if '_id' in d:
+                    del(d['_id'])
             attempts += 1
         if attempts >= 10:
             logging.error('failed in 10 attempts: will save')
